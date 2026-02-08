@@ -1,74 +1,80 @@
 # CLT Speed Race
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An interactive simulation visualizing the **speed of convergence in the Central Limit Theorem (CLT)** across different probability distributions.
+An interactive notebook that visualizes **how fast** the **Central Limit Theorem (CLT)** kicks in for different probability distributions.
 
-The notebook illustrates how quickly the standardized sample mean approaches the standard normal distribution as sample size increases.
+Instead of only showing *that* convergence happens (when it does), this project compares **convergence speed** by tracking multiple diagnostics as sample size grows.
 
 ---
 
 ## Mathematical Setup
 
-Let X₁,…,Xₙ be i.i.d. random variables with mean μ and variance σ² (finite unless noted).
+Let \(X_1,\dots,X_n\) be i.i.d. random variables with mean \(\mu\) and variance \(\sigma^2\) (finite unless noted).
 
 Sample mean:
 
-    X̄ₙ = (1/n) ∑ Xᵢ
+~~~math
+\bar X_n = \frac{1}{n}\sum_{i=1}^n X_i
+~~~
 
 Standardized mean:
 
-    Zₙ = √n (X̄ₙ − μ) / σ
+~~~math
+Z_n = \frac{\sqrt{n}(\bar X_n-\mu)}{\sigma}
+~~~
 
-If 0 < σ² < ∞:
+If \(0 < \sigma^2 < \infty\):
 
-    Zₙ → N(0,1)
+~~~math
+Z_n \Rightarrow \mathcal N(0,1)
+~~~
 
-The simulation shows how fast this convergence occurs.
+The simulation shows **how fast** this convergence occurs.
 
 ---
 
 ## What the notebook renders
 
-For increasing sample sizes n:
+As sample size \(n\) increases, the notebook updates several coordinated views:
 
-• Histogram of Zₙ  
-• Standard normal density overlay  
-• Empirical CDF − Normal CDF difference  
-• Kolmogorov–Smirnov distance  
-• Tail mass outside display window  
+- **Histogram of \(Z_n\)**  
+  with **standard normal density overlay**
+- **ECDF difference** \(F_n(z) - \Phi(z)\)
+- **Kolmogorov–Smirnov distance** (KS)
+- **Tail mass outside the display window** (clipping report)
 
-This produces a dynamic **convergence speed race** across distributions.
+This creates a dynamic **convergence speed race** across distributions.
 
 ---
 
 ## Distributions included
 
-Normal  
-Uniform  
-Exponential  
-Laplace  
-Lognormal  
-Student-t  
-Chi-square  
-F  
-Pareto  
-Cauchy  
+- Normal  
+- Uniform  
+- Exponential  
+- Laplace  
+- Lognormal  
+- Student-t  
+- Chi-square  
+- F  
+- Pareto  
+- Cauchy  
 
 These allow comparison between:
 
-• symmetric vs skewed  
-• light vs heavy tails  
-• finite vs infinite variance  
+- symmetric vs. skewed  
+- light vs. heavy tails  
+- finite vs. infinite variance  
 
 ---
 
 ## Visualization mechanics
 
-To keep plots stable:
+To keep plots stable (especially with heavy tails):
 
-• Histogram display is clipped to a fixed window  
-• Tail mass outside the window is reported  
-• KS and ECDF differences use the **unclipped data**  
+- Histogram display is clipped to a **fixed window**
+- Tail mass outside the window is **reported**
+- KS and ECDF differences use the **unclipped data**
 
 If mean or variance is infinite, CLT visualization stops automatically.
 
@@ -78,20 +84,20 @@ If mean or variance is infinite, CLT visualization stops automatically.
 
 Users can adjust:
 
-• distribution and parameters  
-• sample size growth path  
-• Monte Carlo replications  
-• random seed  
+- distribution and parameters  
+- sample size growth path  
+- Monte Carlo replications  
+- random seed  
 
 ---
 
-## Recording support
+## Recording support (optional)
 
 Each run can optionally export:
 
-• GIF  
-• MP4  
-• PNG frames  
+- GIF  
+- MP4  
+- PNG frames  
 
 All frames are saved to a local render folder.
 
@@ -99,39 +105,47 @@ All frames are saved to a local render folder.
 
 ## Requirements
 
-Python ≥ 3.9
-
-numpy  
-matplotlib  
-ipywidgets  
+- Python ≥ 3.9
+- numpy
+- matplotlib
+- ipywidgets
 
 Install:
 
-    pip install numpy matplotlib ipywidgets
+~~~bash
+pip install numpy matplotlib ipywidgets
+~~~
 
-Optional for video export:
+Optional for GIF export:
 
-    pip install pillow
-    brew install ffmpeg
+~~~bash
+pip install pillow
+~~~
+
+Optional for MP4 export:
+
+~~~bash
+brew install ffmpeg
+~~~
 
 ---
 
-## Interpretation
+## Interpretation (rule-of-thumb)
 
 Fast convergence:
-Normal  
-Uniform  
+- Normal  
+- Uniform  
 
 Slower:
-Exponential  
-Laplace  
+- Exponential  
+- Laplace  
 
 Very slow:
-Student-t (small df)
+- Student-t (small df)
 
 CLT fails:
-Pareto (α ≤ 2)  
-Cauchy  
+- Pareto (\(\alpha \le 2\))  
+- Cauchy  
 
 Lack of stabilization in infinite-variance cases is expected.
 
