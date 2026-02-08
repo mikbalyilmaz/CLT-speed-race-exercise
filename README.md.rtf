@@ -1,0 +1,159 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 # CLT Speed Race\
+\
+An interactive simulation illustrating the **speed of convergence in the Central Limit Theorem (CLT)** across different probability distributions.\
+\
+This project visualizes how quickly the standardized sample mean approaches the standard normal distribution depending on skewness, kurtosis, and tail behavior.\
+\
+---\
+\
+## Overview\
+\
+The classical CLT states that for i.i.d. random variables with finite mean and variance,\
+\
+Z_n = sqrt(n)(\uc0\u88 \u772 _n \u8722  \u956 ) / \u963   \u8594   N(0,1)\
+\
+However, the **rate of convergence** depends strongly on the underlying distribution.\
+\
+This notebook provides a simulation-based \'93speed race\'94 showing how fast the Gaussian approximation stabilizes.\
+\
+---\
+\
+## What the simulation shows\
+\
+For increasing sample sizes n:\
+\
+\'95 Histogram of standardized sample mean Z_n  \
+\'95 Standard normal density overlay  \
+\'95 Empirical CDF difference \uc0\u70 \u770 (x) \u8722  \u934 (x)  \
+\'95 Kolmogorov\'96Smirnov distance  \
+\
+This allows direct comparison of convergence speed across distributions.\
+\
+---\
+\
+## Distributions included\
+\
+Normal \'97 baseline  \
+Uniform \'97 very fast convergence  \
+Exponential \'97 slower (skewed)  \
+Laplace \'97 heavy tails  \
+Student-t \'97 very slow for small df  \
+Chi-square \'97 skewed  \
+F \'97 heavy-tailed ratio  \
+Lognormal \'97 strong skew  \
+Pareto \'97 infinite variance if \uc0\u945  \u8804  2  \
+Cauchy \'97 no CLT (variance undefined)\
+\
+---\
+\
+## Visualization notes\
+\
+To keep plots stable:\
+\
+\'95 Histogram display is clipped to a fixed window  \
+\'95 Tail mass outside the window is reported  \
+\'95 KS distance is computed from the unclipped data  \
+\
+This preserves statistical correctness while maintaining readable visuals.\
+\
+---\
+\
+## Recording feature\
+\
+Each run can automatically save an animation.\
+\
+Supported outputs:\
+\'95 GIF (no external dependencies)  \
+\'95 MP4 (requires ffmpeg)  \
+\'95 Raw PNG frames  \
+\
+Example output:\
+\
+clt_renders/\
+ \uc0\u9492 \u9472 \u9472  CLT_Student-t_R2000_nmax10000_steps30/\
+     \uc0\u9500 \u9472 \u9472  frames/\
+     \uc0\u9500 \u9472 \u9472  animation.gif\
+     \uc0\u9492 \u9472 \u9472  animation.mp4\
+\
+---\
+\
+## Requirements\
+\
+Python 3.9+\
+\
+Required:\
+numpy  \
+matplotlib  \
+ipywidgets  \
+Pillow  \
+\
+Optional:\
+ffmpeg  (for MP4 export)\
+\
+Install:\
+\
+pip install numpy matplotlib ipywidgets pillow\
+\
+For interactive backend:\
+\
+pip install ipympl\
+\
+---\
+\
+## Running\
+\
+1. Open the notebook  \
+2. Run all cells  \
+3. Choose distribution  \
+4. Set parameters  \
+5. Enable recording if desired  \
+6. Press Run  \
+\
+---\
+\
+## Recommended parameters\
+\
+R     = 2000\'964000  \
+nmax  = 8000\'9612000  \
+steps = 25\'9635  \
+\
+These give stable visuals and clear convergence comparisons.\
+\
+---\
+\
+## Interpretation\
+\
+Fast convergence:\
+Uniform  \
+Normal  \
+\
+Slow convergence:\
+Exponential  \
+Student-t (small df)\
+\
+CLT fails:\
+Pareto \uc0\u945  \u8804  2  \
+Cauchy  \
+\
+Failure to stabilize is expected in infinite-variance cases.\
+\
+---\
+\
+## Reproducibility\
+\
+All simulations use a fixed random seed and vectorized NumPy operations.\
+\
+---\
+\
+## Author\
+\
+Muhammed \uc0\u304 kbal Y\u305 lmaz  \
+myucanlar@gmail.com\
+}
