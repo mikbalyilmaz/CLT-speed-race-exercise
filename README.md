@@ -9,17 +9,19 @@ The notebook illustrates how quickly the standardized sample mean approaches the
 
 ## Mathematical Setup
 
-Let  
-X₁,…,Xₙ be i.i.d. with mean μ and variance σ² (finite unless noted).
+Let X₁,…,Xₙ be i.i.d. random variables with mean μ and variance σ² (finite unless noted).
 
 Sample mean:
-X̄ₙ = (1/n) Σ Xᵢ
+
+    X̄ₙ = (1/n) ∑ Xᵢ
 
 Standardized mean:
-Zₙ = √n (X̄ₙ − μ) / σ
+
+    Zₙ = √n (X̄ₙ − μ) / σ
 
 If 0 < σ² < ∞:
-Zₙ → N(0,1)
+
+    Zₙ → N(0,1)
 
 The simulation shows how fast this convergence occurs.
 
@@ -31,7 +33,7 @@ For increasing sample sizes n:
 
 • Histogram of Zₙ  
 • Standard normal density overlay  
-• ECDF − Normal CDF difference  
+• Empirical CDF − Normal CDF difference  
 • Kolmogorov–Smirnov distance  
 • Tail mass outside display window  
 
@@ -104,11 +106,13 @@ matplotlib
 ipywidgets  
 
 Install:
-pip install numpy matplotlib ipywidgets
+
+    pip install numpy matplotlib ipywidgets
 
 Optional for video export:
-pip install pillow  
-brew install ffmpeg
+
+    pip install pillow
+    brew install ffmpeg
 
 ---
 
