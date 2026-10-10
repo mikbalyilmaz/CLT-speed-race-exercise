@@ -1,5 +1,7 @@
 # CLT Speed Race: Exact Distances, Simulation Noise and Heavy Tails
 
+[![tests](https://github.com/mikbalyilmaz/CLT-speed-race-exercise/actions/workflows/tests.yml/badge.svg)](https://github.com/mikbalyilmaz/CLT-speed-race-exercise/actions/workflows/tests.yml)
+
 Version 2 of a small study of how fast the standardized sample mean
 
 $$Z_n = \frac{\sqrt{n}\,(\bar X_n - \mu)}{\sigma}$$
