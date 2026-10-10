@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "CLT speed race: exact distances, simulation noise and heavy tails"
+version: 2.0.0
+authors:
+  - family-names: "Yılmaz"
+    given-names: "Muhammed İkbal"
+    email: "myucanlar@gmail.com"
+    affiliation: "Department of Econometrics, Ankara Hacı Bayram Veli University"
+repository-code: "https://github.com/mikbalyilmaz/CLT-speed-race-exercise"
+license: MIT
+keywords:
+  - central limit theorem
+  - Kolmogorov distance
+  - Edgeworth expansion
+  - Monte Carlo simulation
+  - heavy tails
