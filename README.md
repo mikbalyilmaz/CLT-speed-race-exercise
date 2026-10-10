@@ -2,6 +2,8 @@
 
 [![tests](https://github.com/mikbalyilmaz/CLT-speed-race-exercise/actions/workflows/tests.yml/badge.svg)](https://github.com/mikbalyilmaz/CLT-speed-race-exercise/actions/workflows/tests.yml)
 
+**How fast does the central limit theorem work, and what decides it?**
+
 <p align="center">
   <img src="figures/race_exponential.gif" alt="Animated CLT speed race for the Exponential distribution" width="100%">
 </p>
@@ -10,7 +12,36 @@
 Middle: simulated $\hat F(x) - \Phi(x)$ and the exact $F_n(x) - \Phi(x)$ (dashed). Right: simulated distance against $n$,
 exact $D_n$, and the mean noise of a simulation with 2,000 replications (shaded). The simulated distance follows the exact
 one only until about $n = 50$; after that it stays at the noise level (0.0164 at $n = 10^4$, against an exact $D_n$ of
-0.00133).
+0.00133). Settings and the command to reproduce it are under [The animation](#the-animation).
+
+Version 2 of a small study of how fast the standardized sample mean
+
+$$Z_n = \frac{\sqrt{n}\,(\bar X_n - \mu)}{\sigma}$$
+
+approaches the standard normal distribution for the ten population distributions of version 1. Speed is measured by
+the Kolmogorov distance $D_n = \sup_x |P(Z_n \le x) - \Phi(x)|$, computed exactly (without simulation) where possible
+and compared with the leading term of its Edgeworth expansion. The animated "race" of version 1 is kept, rebuilt so that
+it shows the exact distance and the noise level of the simulation. A short project note (English and Turkish) explains
+why each analysis was done and what it shows.
+
+## Main results
+
+- **Skewness sets the speed.** For symmetric distributions with a finite fourth moment (Uniform, Laplace,
+  Student-t(5)) $D_n$ falls like $1/n$; for skewed ones (Chi-square(5), Exponential) only like $1/\sqrt n$, with the
+  constant given by the Edgeworth expansion. $D_n < 0.01$ is reached at $n = 3$ (Uniform), 7 (Laplace), 8
+  (Student-t(5)), 71 (Chi-square(5)) and 177 (Exponential). Laplace, which version 1 grouped with Exponential, is
+  about ten times closer to normal at $n = 30$.
+- **Infinite third moments slow convergence.** Student-t(3) is symmetric but converges like $0.110/\sqrt n$ and needs
+  $n = 116$. Pareto(2.5), the default of version 1, is still at a distance of 0.031 at $n = 10^4$.
+- **The race of version 1 mostly showed simulation noise.** With $R = 2000$ replications the simulated distance averages
+  about 0.017–0.019 even when $Z_n$ is exactly normal: version 1 reported 0.0151 for the Normal distribution
+  at $n = 10^4$. To resolve the exact distance of Uniform at $n = 1000$ would take about $10^9$ replications.
+- **Infinite variance.** The interquartile range of the Cauchy mean stays at 2 for every $n$; for Pareto(1.5) it
+  shrinks like $n^{-0.30}$ (theory: $n^{-1/3}$), not like $n^{-1/2}$.
+
+All numbers are in `figures/*.csv` and in the project note.
+
+## The animation
 
 | Setting | Value |
 |---|---|
@@ -33,16 +64,6 @@ cp notebook/clt_renders/exponential/race_Exponential.gif figures/race_exponentia
 Any other distribution or setting works the same way, for example `Distribution('Student-t', {'df': 3})` or `R=20000`.
 The frames are written to `notebook/clt_renders/`, which `.gitignore` excludes. The interactive version is
 `notebook/clt_speed_race.ipynb`.
-
-Version 2 of a small study of how fast the standardized sample mean
-
-$$Z_n = \frac{\sqrt{n}\,(\bar X_n - \mu)}{\sigma}$$
-
-approaches the standard normal distribution for the ten population distributions of version 1. Speed is measured by
-the Kolmogorov distance $D_n = \sup_x |P(Z_n \le x) - \Phi(x)|$, computed exactly (without simulation) where possible
-and compared with the leading term of its Edgeworth expansion. The animated "race" of version 1 is kept, rebuilt so that
-it shows the exact distance and the noise level of the simulation. A short project note (English and Turkish) explains
-why each analysis was done and what it shows.
 
 ## Contents
 
@@ -91,25 +112,8 @@ from cltspeed import race
 d = Distribution("Exponential")
 kolmogorov_distance(d, 30)       # (D_30, point where it is attained, method)
 leading_term(d, 30)              # (|skewness| phi(0) / (6 sqrt n), order 0.5, "skewness")
-rows, gif = race.run(d, R=2000, nmax=10_000, steps=30, seed=42, outdir="renders/exponential", fmt="gif")
+rows, gif = race.run(d, R=2000, nmax=10_000, steps=30, seed=42, outdir="notebook/clt_renders/exponential", fmt="gif")
 ```
-
-## Main results
-
-- **Skewness sets the speed.** For symmetric distributions with a finite fourth moment (Uniform, Laplace,
-  Student-t(5)) $D_n$ falls like $1/n$; for skewed ones (Chi-square(5), Exponential) only like $1/\sqrt n$, with the
-  constant given by the Edgeworth expansion. $D_n < 0.01$ is reached at $n = 3$ (Uniform), 7 (Laplace), 8
-  (Student-t(5)), 71 (Chi-square(5)) and 177 (Exponential). Laplace, which version 1 grouped with Exponential, is
-  about ten times closer to normal at $n = 30$.
-- **Infinite third moments slow convergence.** Student-t(3) is symmetric but converges like $0.110/\sqrt n$ and needs
-  $n = 116$. Pareto(2.5), the default of version 1, is still at a distance of 0.031 at $n = 10^4$.
-- **The race of version 1 mostly showed simulation noise.** With $R = 2000$ replications the simulated distance averages
-  about 0.017–0.019 even when $Z_n$ is exactly normal: version 1 reported 0.0151 for the Normal distribution
-  at $n = 10^4$. To resolve the exact distance of Uniform at $n = 1000$ would take about $10^9$ replications.
-- **Infinite variance.** The interquartile range of the Cauchy mean stays at 2 for every $n$; for Pareto(1.5) it
-  shrinks like $n^{-0.30}$ (theory: $n^{-1/3}$), not like $n^{-1/2}$.
-
-All numbers are in `figures/*.csv` and in the project note.
 
 ## Changes from version 1
 
