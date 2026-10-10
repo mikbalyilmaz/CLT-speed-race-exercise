@@ -2,6 +2,38 @@
 
 [![tests](https://github.com/mikbalyilmaz/CLT-speed-race-exercise/actions/workflows/tests.yml/badge.svg)](https://github.com/mikbalyilmaz/CLT-speed-race-exercise/actions/workflows/tests.yml)
 
+<p align="center">
+  <img src="figures/race_exponential.gif" alt="Animated CLT speed race for the Exponential distribution" width="100%">
+</p>
+
+**The race for Exponential(1).** Left: histogram of 2,000 simulated values of $Z_n$ with the standard normal density.
+Middle: simulated $\hat F(x) - \Phi(x)$ and the exact $F_n(x) - \Phi(x)$ (dashed). Right: simulated distance against $n$,
+exact $D_n$, and the mean noise of a simulation with 2,000 replications (shaded). The simulated distance follows the exact
+one only until about $n = 50$; after that it stays at the noise level (0.0164 at $n = 10^4$, against an exact $D_n$ of
+0.00133).
+
+| Setting | Value |
+|---|---|
+| Distribution | Exponential(1), standardized with $\mu = \sigma = 1$ |
+| Replications $R$ | 2,000 independent paths, each extended from one $n$ to the next |
+| Sample sizes | 118 values of $n$ from 10 to 10,000, evenly spaced on a log scale (`steps=120`; rounding merges two) |
+| Random seed | 42 (NumPy `default_rng`) |
+| Simulated distance | exact $\sup_x \lvert\hat F(x) - \Phi(x)\rvert$ over the empirical distribution function |
+| Exact distance | regularized incomplete gamma function (sum of $n$ exponentials is gamma distributed) |
+| Noise level | mean of the exact Kolmogorov statistic of 2,000 draws (`scipy.stats.kstwo`), 0.0193 |
+| Animation | 118 frames, 25 frames per second (40 ms each), 1135 × 361 px, about 4.7 s per loop |
+
+To reproduce the animation, run from the repository root (about two minutes):
+
+```bash
+python -c "from cltspeed import Distribution, race; race.run(Distribution('Exponential'), R=2000, nmax=10_000, steps=120, seed=42, outdir='notebook/clt_renders/exponential', fmt='gif', fps=25, dpi=90)"
+cp notebook/clt_renders/exponential/race_Exponential.gif figures/race_exponential.gif
+```
+
+Any other distribution or setting works the same way, for example `Distribution('Student-t', {'df': 3})` or `R=20000`.
+The frames are written to `notebook/clt_renders/`, which `.gitignore` excludes. The interactive version is
+`notebook/clt_speed_race.ipynb`.
+
 Version 2 of a small study of how fast the standardized sample mean
 
 $$Z_n = \frac{\sqrt{n}\,(\bar X_n - \mu)}{\sigma}$$
