@@ -19,7 +19,7 @@ import numpy as np
 from common import EXACT, Distribution, name, read_table, save_table
 from cltspeed import kolmogorov_distance
 from cltspeed.montecarlo import KOLMOGOROV_MEAN, ks_grid_v1, noise_floor, replications_needed, v1_race
-from cltspeed.style import AQUA, BLUE, GOLD, MUTED, ORANGE, PINK, PURPLE, L, save_figure, use_style
+from cltspeed.style import BLUE, INK, MUTED, RED, SERIES, L, fit_log_axis, may_touch, save_figure, use_style
 
 R = 2000
 floor_mean, floor_q95 = noise_floor(R)
@@ -76,46 +76,49 @@ use_style()
 
 def draw():
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.4), constrained_layout=True)
-    ax = axes[0]
     from matplotlib.lines import Line2D
+    fig, axes = plt.subplots(1, 2, figsize=(4.75, 2.6), constrained_layout=True)
+    ax = axes[0]
     noise = float(grid_floor.mean())
     ax.axhspan(1e-7, noise, color=MUTED, alpha=0.13, lw=0)
-    ax.axhline(noise, color=MUTED, lw=0.8, ls=":")
-    handles = []
+    may_touch(ax.axhline(noise, color=MUTED, lw=0.8, ls=(0, (1, 1.4))))
+    handles, values = [], []
     names = {"Normal": L("Normal", "Normal"), "Uniform": L("Uniform", "Tekdüze"),
              "Exponential": L("Exponential", "Üstel")}
-    for dist, c, mk in zip(SHOWN, (MUTED, BLUE, ORANGE), ("o", "s", "D")):
+    for dist, c, mk in zip(SHOWN, (MUTED, BLUE, INK), ("o", "s", "D")):
         sub = [r for r in rows if r["distribution"] == dist.label]
-        ax.loglog([r["n"] for r in sub], [r["ks_v1"] for r in sub], ls="none", marker=mk, ms=3, color=c)
+        ax.plot([r["n"] for r in sub], [r["ks_v1"] for r in sub], ls="none", marker=mk, ms=2.4, color=c)
+        values += [r["ks_v1"] for r in sub]
         if dist.name != "Normal":
             nn = np.unique(np.round(np.geomspace(10, 10_000, 40)).astype(int))
-            ax.loglog(nn, [kolmogorov_distance(dist, int(k))[0] for k in nn], color=c, lw=1.2)
-        handles.append(Line2D([], [], color=c, marker=mk, ms=3, lw=0 if dist.name == "Normal" else 1.2,
+            ax.plot(nn, [kolmogorov_distance(dist, int(k))[0] for k in nn], color=c, lw=1.1)
+        handles.append(Line2D([], [], color=c, marker=mk, ms=2.4, lw=0 if dist.name == "Normal" else 1.1,
                               label=names[dist.name]))
-    handles.append(Line2D([], [], color=MUTED, lw=0.8, ls=":", label=L("Mean noise, R = 2,000",
-                                                                         "Ortalama gürültü, R = 2.000")))
-    ax.set_ylim(5e-5, 1.0)
+    handles.append(Line2D([], [], color=MUTED, lw=0.8, ls=(0, (1, 1.4)),
+                          label=L("Mean noise, R = 2,000", "Ortalama gürültü, R = 2.000")))
+    fit_log_axis(ax, "x", [10, 10_000])
+    fit_log_axis(ax, "y", [1e-5, 10.0])
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_ylabel(L("Distance to normality", "Normalden uzaklık"))
-    ax.set_title(L("Version 1 simulation against exact $D_n$", "1. sürüm benzetimi ve kesin $D_n$"))
-    ax.legend(handles=handles, loc="upper right", fontsize=7)
+    ax.set_title(L("(a) Version 1 simulation and exact $D_n$", "(a) 1. sürüm benzetimi ve kesin $D_n$"))
+    ax.legend(handles=handles, loc="upper center", fontsize=6, ncol=2, columnspacing=1.0, handlelength=1.6)
     ax = axes[1]
-    for dist, c, mk in zip(EXACT, (BLUE, AQUA, PURPLE, PINK, GOLD, ORANGE), ("o", "s", "^", "v", "D", "P")):
+    allr = []
+    for dist, (c, ls, mk) in zip(EXACT, SERIES):
         sub = [r for r in read_table("table1_exact_distance") if r["distribution"] == dist.label and int(r["n"]) >= 10]
         ns = np.array([int(r["n"]) for r in sub])
-        ds = np.array([float(r["D_n"]) for r in sub])
-        ax.loglog(ns, replications_needed(ds), color=c, lw=1.2, marker=mk, ms=2.6, markevery=3, label=name(dist.label))
-    for value, text in ((2000, L("version 1 default", "1. sürüm varsayılanı")),
-                        (6000, L("version 1 maximum", "1. sürüm üst sınırı"))):
-        ax.axhline(value, color=MUTED, lw=0.8, ls=":")
-        ax.text(9000, value * 1.3, text, fontsize=7.5, color=MUTED, ha="right")
+        rr = replications_needed(np.array([float(r["D_n"]) for r in sub]))
+        allr.append(rr)
+        ax.plot(ns, rr, color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, markevery=3, label=name(dist.label))
+    for value in (2000, 6000):           # R of version 1: default and maximum
+        may_touch(ax.axhline(value, color=RED, lw=0.8, ls=(0, (1, 1.4))))
+    fit_log_axis(ax, "x", [10, 10_000])
+    fit_log_axis(ax, "y", np.concatenate(allr + [[100.0, 1e13]]), every=2)     # room for the legend above the lines
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_ylabel(L("Replications R", "Tekrar sayısı R"))
-    ax.set_title(L("R at which the noise equals $D_n$", "Gürültünün $D_n$'ye eşit olduğu R"))
-    ax.legend(loc="upper left", fontsize=7)
+    ax.set_title(L("(b) R at which the noise equals $D_n$", "(b) Gürültünün $D_n$'ye eşit olduğu R"))
+    ax.legend(loc="upper left", fontsize=6, handlelength=2.4, ncol=2, columnspacing=0.8)
     return fig
 
 
 save_figure("fig2_monte_carlo", draw,
-            lambda: "Figure 2. What a simulation with R = 2,000 replications can and cannot measure")
+            lambda: "Figure 2. What a simulation with R = 2,000 replications can and cannot measure "
+                    "(red dotted: R = 2,000 and 6,000, the default and the maximum of version 1)")

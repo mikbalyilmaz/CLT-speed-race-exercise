@@ -57,7 +57,7 @@ All numbers are in `figures/*.csv` and in the project note.
 To reproduce the animation, run from the repository root (about two minutes):
 
 ```bash
-python -c "from cltspeed import Distribution, race; race.run(Distribution('Exponential'), R=2000, nmax=10_000, steps=120, seed=42, outdir='notebook/clt_renders/exponential', fmt='gif', fps=25, dpi=90)"
+python -c "from cltspeed import Distribution, race; race.run(Distribution('Exponential'), R=2000, nmax=10_000, steps=120, seed=42, outdir='notebook/clt_renders/exponential', fmt='gif', fps=25, dpi=150)"
 cp notebook/clt_renders/exponential/race_Exponential.gif figures/race_exponential.gif
 ```
 

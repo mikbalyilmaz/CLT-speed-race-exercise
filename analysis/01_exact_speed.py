@@ -17,11 +17,9 @@ import numpy as np
 from common import EXACT, THRESHOLD, Distribution, name, save_table
 from cltspeed import kolmogorov_distance, leading_term, v1_distributions
 from cltspeed.montecarlo import noise_floor
-from cltspeed.style import AQUA, BLUE, GOLD, MUTED, ORANGE, PINK, PURPLE, L, save_figure, use_style
+from cltspeed.style import RED, SERIES, L, auto_axis, fit_log_axis, may_touch, save_figure, use_style
 
 NS = np.unique(np.round(np.geomspace(1, 10_000, 41)).astype(int))
-COLOURS = [BLUE, AQUA, PURPLE, PINK, GOLD, ORANGE]
-MARKERS = ["o", "s", "^", "v", "D", "P"]
 FLOOR_R2000 = noise_floor(2000)[0]
 
 
@@ -76,33 +74,34 @@ use_style()
 
 def draw():
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.4), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(4.75, 2.6), constrained_layout=True)
     ax = axes[0]
-    for (label, ds), c, mk in zip(curves.items(), COLOURS, MARKERS):
+    ratios = []
+    for (label, ds), (c, ls, mk) in zip(curves.items(), SERIES):
         dist = next(d for d in EXACT if d.label == label)
         lead = np.array([leading_term(dist, int(n))[0] for n in NS])
-        ax.loglog(NS, ds, color=c, lw=1.2, marker=mk, ms=2.6, markevery=4, label=name(label))
-        ax.loglog(NS, lead, color=c, lw=0.8, ls="--")
-    ax.axhline(THRESHOLD, color=MUTED, lw=0.8, ls=":")
+        ax.plot(NS, ds, color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, markevery=4, label=name(label))
+        ax.plot(NS, lead, color=c, lw=0.6, ls=(0, (3, 2)))
+        ratios.append(np.asarray(ds) / lead)
+    may_touch(ax.axhline(THRESHOLD, color=RED, lw=0.9, ls=(0, (1, 1.4))))
+    fit_log_axis(ax, "x", NS, every=2)
+    log_lo = 1e-6
+    fit_log_axis(ax, "y", [log_lo, 1.0], every=2)
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_ylabel(L("Exact distance $D_n$", "Kesin uzaklık $D_n$"))
-    ax.set_title(L("Exact distance (dashed: leading term)", "Kesin uzaklık (kesikli: öncü terim)"))
-    ax.set_ylim(1e-6, 0.3)
-    ax.legend(loc="lower left", fontsize=7.5)
+    ax.set_title(L("(a) Exact distance $D_n$", "(a) Kesin uzaklık $D_n$"))
     ax = axes[1]
-    for (label, ds), c, mk in zip(curves.items(), COLOURS, MARKERS):
-        dist = next(d for d in EXACT if d.label == label)
-        lead = np.array([leading_term(dist, int(n))[0] for n in NS])
-        ax.semilogx(NS, ds / lead, color=c, lw=1.2, marker=mk, ms=2.6, markevery=4, label=label)
-    ax.axhline(1, color=MUTED, lw=0.8, ls=":")
-    ax.set_ylim(0, 2.2)
+    for (label, ds), (c, ls, mk), r in zip(curves.items(), SERIES, ratios):
+        ax.plot(NS, r, color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, markevery=4)
+    may_touch(ax.axhline(1, color=RED, lw=0.9, ls=(0, (1, 1.4))))
+    fit_log_axis(ax, "x", NS, every=2)
+    auto_axis(ax, "y", np.append(np.concatenate(ratios), 0.0))
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_ylabel(L("$D_n$ / leading term", "$D_n$ / öncü terim"))
-    ax.set_title(L("Ratio to the leading term", "Öncü terime oran"))
-    from cltspeed.style import decimal_axis
-    decimal_axis(ax)
+    ax.set_title(L("(b) $D_n$ / leading term", "(b) $D_n$ / öncü terim"))
+    handles, labels = axes[0].get_legend_handles_labels()
+    ax.legend(handles, labels, loc="upper right", fontsize=6, handlelength=2.4, ncol=2, columnspacing=0.8)
     return fig
 
 
 save_figure("fig1_exact_speed", draw,
-            lambda: "Figure 1. Exact distance between the standardized mean and the normal distribution")
+            lambda: "Figure 1. Exact distance between the standardized mean and the normal distribution "
+                    "(dashed: leading term; red dotted: 0.01 and 1)")

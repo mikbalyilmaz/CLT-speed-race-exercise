@@ -23,7 +23,7 @@ from scipy import special
 from common import SEED, Distribution, name, save_table
 from cltspeed import leading_term
 from cltspeed.montecarlo import ks_exact, noise_floor, sample_means
-from cltspeed.style import AQUA, BLUE, GOLD, MUTED, ORANGE, PINK, L, save_figure, use_style
+from cltspeed.style import BLUE, INK, MUTED, L, fit_log_axis, may_touch, save_figure, use_style
 
 R = 100_000
 R_IQR_ONLY = 20_000
@@ -93,33 +93,40 @@ use_style()
 
 def draw():
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.4), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(4.75, 2.6), constrained_layout=True)
     ax = axes[0]
-    ax.loglog(NS, [r["Normal_exact"] for r in iqr_rows], color=MUTED, lw=1.2, ls="--",
-              label=L("Normal(0, 1), exact", "Normal(0, 1), kesin"))
-    for label, c, mk in (("Pareto(2.5)", BLUE, "o"), ("Pareto(1.5)", AQUA, "s"), ("Cauchy", ORANGE, "D")):
-        ax.loglog(NS, [r[label] for r in iqr_rows], color=c, lw=1.2, marker=mk, ms=2.8, label=name(label))
+    vals = [r["Normal_exact"] for r in iqr_rows]
+    ax.plot(NS, vals, color=MUTED, lw=1.1, ls=(0, (3, 2)), label=L("Normal(0, 1), exact", "Normal(0, 1), kesin"))
+    for label, c, ls, mk in (("Pareto(2.5)", BLUE, "-", "o"), ("Pareto(1.5)", INK, "--", "s"),
+                             ("Cauchy", INK, "-", "D")):
+        y = [r[label] for r in iqr_rows]
+        vals += y
+        ax.plot(NS, y, color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, label=name(label))
+    fit_log_axis(ax, "x", NS, every=2)
+    fit_log_axis(ax, "y", vals)
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_ylabel(L("IQR of the sample mean", "Örneklem ortalamasının ÇAA'sı"))
-    ax.set_title(L("Spread of the sample mean", "Örneklem ortalamasının yayılımı"))
-    ax.legend(loc="lower left", fontsize=7.5)
+    ax.set_title(L("(a) IQR of the sample mean", "(a) Örneklem ortalamasının ÇAA'sı"))
+    ax.legend(loc="upper right", fontsize=6, handlelength=2.4, ncol=2, columnspacing=0.8)
     ax = axes[1]
     ax.axhspan(1e-5, noise, color=MUTED, alpha=0.13, lw=0)
-    ax.axhline(noise, color=MUTED, lw=0.8, ls=":")
-    for label, c, mk in (("Lognormal(0.6)", GOLD, "^"), ("F(5, 10)", PINK, "v"), ("Pareto(2.5)", BLUE, "o")):
-        ax.loglog(NS, [r[label] for r in ks_rows], color=c, lw=1.2, marker=mk, ms=2.8, label=name(label))
+    may_touch(ax.axhline(noise, color=MUTED, lw=0.8, ls=(0, (1, 1.4))))
+    for label, c, ls, mk in (("Lognormal(0.6)", INK, "-", "^"), ("F(5, 10)", MUTED, "-", "v"),
+                             ("Pareto(2.5)", BLUE, "-", "o")):
+        ax.plot(NS, [r[label] for r in ks_rows], color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, label=name(label))
         lead = [r[f"{label} leading term"] for r in ks_rows]
         if lead[0] != "":
-            ax.loglog(NS, lead, color=c, lw=0.8, ls="--")
-    ax.text(1.2, noise * 0.8, L("mean noise, R = 100,000", "ortalama gürültü, R = 100.000"), fontsize=7.5,
-            color=MUTED, va="top")
-    ax.set_ylim(1e-3, 1.0)
+            ax.plot(NS, lead, color=c, lw=0.6, ls=(0, (3, 2)))
+    ax.text(0.03, 0.03, L("grey dotted line: mean noise,\nR = 100,000",
+                          "gri noktalı çizgi: ortalama gürültü,\nR = 100.000"), fontsize=6,
+            transform=ax.transAxes, color=INK)
+    fit_log_axis(ax, "x", NS, every=2)
+    fit_log_axis(ax, "y", [1e-3, 1.0])
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_ylabel(L("Simulated distance", "Benzetimle uzaklık"))
-    ax.set_title(L("Distance to normality (dashed: leading term)", "Normalden uzaklık (kesikli: öncü terim)"))
-    ax.legend(loc="upper right", fontsize=7.5)
+    ax.set_title(L("(b) Simulated distance to normality", "(b) Benzetimle normalden uzaklık"))
+    ax.legend(loc="upper right", fontsize=6.3, handlelength=2.6)
     return fig
 
 
 save_figure("fig3_heavy_tails", draw,
-            lambda: "Figure 3. Heavy tails: slow convergence, and no convergence to the normal distribution")
+            lambda: "Figure 3. Heavy tails: slow convergence, and no convergence to the normal distribution "
+                    "(dashed in (b): leading term)")

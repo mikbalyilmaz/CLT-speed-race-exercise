@@ -1,5 +1,26 @@
 # Changes
 
+## Version 2.1.0
+
+No result changed: every table and every number in the notes is the same as in version 2.0.0.
+
+- Figures redrawn in the style of the charts on muhammedikbalyilmaz.com: series in black and deep blue (#0033a0),
+  red dotted lines for dates and reference values, labels at the end of the lines where possible, bold panel titles,
+  Latin Modern Roman. Every figure is 4.75 inches wide, the width of the text in the notes.
+- Every figure is drawn in English and in Turkish (decimal comma), as before.
+- Axis rule: every value axis starts and ends at a labelled tick, and there are no minor ticks. Before a figure is
+  saved, `cltspeed/style.py` checks it and stops with an error if an axis limit is not a labelled tick, if two pieces of
+  text overlap, if a note or a legend lies on a data line, or if a note leaves its panel.
+- The race animation (`cltspeed/race.py`, `figures/race_exponential.gif`) uses the same colours and axes; the
+  command in the README writes it at 150 dpi.
+- The project notes now use the note template: 11 pt, A4, 4.5 cm side margins, a header with the short name and
+  the compilation date, and the page count. Wide equations and tables were split or set in a smaller size to fit the
+  narrower text block.
+- References: one paragraph per entry with a 1.27 cm hanging indent and an ampersand before the last author
+  (APA 7).
+- Compiled Python files (`__pycache__/`) that had been committed are removed from the repository; `.gitignore`
+  already excluded them.
+
 ## Version 2.0.0
 
 ### New

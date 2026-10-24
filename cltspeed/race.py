@@ -52,13 +52,13 @@ def exact_distances(dist, ns):
 
 def make_figure():
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 3, figsize=(12.5, 3.9), constrained_layout=True)
+    fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.6), constrained_layout=True)
     return fig, axes
 
 
 def draw_frame(fig, axes, dist, n, z, history, exact_ns=None, exact_d=None, R=None, show_exact_curve=True):
     """Draws one frame. `history` is a list of (n, simulated distance) up to and including this n."""
-    from .style import BLUE, MUTED, ORANGE
+    from .style import BAND, BLUE, INK, MUTED, auto_axis, fit_log_axis, nice_limits, value_axis
     ax_h, ax_d, ax_r = axes
     for ax in axes:
         ax.clear()
@@ -67,14 +67,14 @@ def draw_frame(fig, axes, dist, n, z, history, exact_ns=None, exact_d=None, R=No
 
     inside = np.abs(z) <= WINDOW
     outside = 1 - inside.mean()
-    ax_h.hist(z[inside], bins=BINS, weights=np.full(inside.sum(), 1 / (z.size * (BINS[1] - BINS[0]))),
-              color=BLUE, alpha=0.55)
+    heights, _, _ = ax_h.hist(z[inside], bins=BINS, weights=np.full(inside.sum(), 1 / (z.size * (BINS[1] - BINS[0]))),
+              color=BAND, edgecolor=BAND, linewidth=0.3)
     xs = np.linspace(-WINDOW, WINDOW, 400)
-    ax_h.plot(xs, np.exp(-0.5 * xs * xs) / math.sqrt(2 * math.pi), color=ORANGE, lw=1.6)
-    ax_h.set_xlim(-WINDOW, WINDOW)
-    ax_h.set_title(f"$Z_n$, $n$ = {n:,}; outside the window: {100 * outside:.2f}%")
+    ax_h.plot(xs, np.exp(-0.5 * xs * xs) / math.sqrt(2 * math.pi), color=INK, lw=1.4)
+    value_axis(ax_h, "x", -WINDOW, WINDOW, 3)
+    auto_axis(ax_h, "y", [0.0, max(float(np.max(heights)), 0.4)], intervals=(2, 4))
+    ax_h.set_title(f"$Z_n$, $n$ = {n:,}; outside: {100 * outside:.2f}%")
     ax_h.set_xlabel("$z$")
-    ax_h.set_ylabel("Density")
 
     zs = np.sort(z)
     diff = np.searchsorted(zs, CURVE_X, side="right") / zs.size - 0.5 * (1 + np.vectorize(math.erf)(CURVE_X / math.sqrt(2)))
@@ -83,30 +83,32 @@ def draw_frame(fig, axes, dist, n, z, history, exact_ns=None, exact_d=None, R=No
     if show_exact_curve and exact_d is not None:
         f, _ = difference_function(dist, n)
         exact_diff = f(EXACT_X)
-        ax_d.plot(EXACT_X, exact_diff, color=ORANGE, lw=1.4, ls="--", label="Exact")
+        ax_d.plot(EXACT_X, exact_diff, color=INK, lw=1.2, ls=(0, (3, 2)), label="Exact")
         top = max(top, 1.15 * float(np.max(np.abs(exact_diff))))
-    ax_d.axhline(0, color=MUTED, lw=0.8)
-    ax_d.set_ylim(-top, top)
-    ax_d.set_xlim(-WINDOW, WINDOW)
+    ax_d.axhline(0, color=MUTED, lw=0.6)
+    lo_, hi_, step_ = nice_limits(-top, top, (2, 4))
+    value_axis(ax_d, "y", -max(-lo_, hi_), max(-lo_, hi_), step_)
+    value_axis(ax_d, "x", -WINDOW, WINDOW, 3)
     ax_d.set_title(r"$\hat F(x) - \Phi(x)$")
     ax_d.set_xlabel("$x$")
-    ax_d.legend(loc="upper right")
+    ax_d.legend(loc="upper right", fontsize=6.5)
 
     hn, hd = zip(*history)
-    ax_r.loglog(hn, hd, "o-", color=BLUE, ms=3, lw=1, label="Simulated distance")
+    ax_r.plot(hn, hd, "o-", color=BLUE, ms=2.5, lw=1, label="Simulated distance")
     if exact_d is not None:
-        ax_r.loglog(exact_ns, exact_d, color=ORANGE, lw=1.6, label="Exact $D_n$")
-    ax_r.axhspan(1e-9, floor_mean, color=MUTED, alpha=0.15, lw=0)
-    ax_r.axhline(floor_mean, color=MUTED, lw=0.9, ls=":", label=f"Noise level, R = {R:,}")
+        ax_r.plot(exact_ns, exact_d, color=INK, lw=1.4, label="Exact $D_n$")
+    ax_r.axhspan(1e-12, floor_mean, color=MUTED, alpha=0.15, lw=0)
+    ax_r.axhline(floor_mean, color=MUTED, lw=0.9, ls=(0, (1, 1.4)), label=f"Noise level, R = {R:,}")
     lo = min([floor_mean / 3] + ([float(np.min(exact_d)) / 2] if exact_d is not None else []))
-    ax_r.set_ylim(lo, 1.0)
-    ax_r.set_xlim(exact_ns[0] if exact_ns is not None else hn[0], exact_ns[-1] if exact_ns is not None else max(hn))
+    fit_log_axis(ax_r, "y", [lo, 1.0])
+    fit_log_axis(ax_r, "x", [exact_ns[0] if exact_ns is not None else hn[0],
+                             exact_ns[-1] if exact_ns is not None else max(hn)])
     ax_r.set_title("Distance to the normal distribution")
     ax_r.set_xlabel("$n$")
-    ax_r.legend(loc="lower left")
+    ax_r.legend(loc="lower left", fontsize=6.5)
     fig.suptitle(f"{dist.label}: simulated distance {history[-1][1]:.4f}"
                  + (f", exact $D_n$ = {exact_d[list(exact_ns).index(n)]:.3g}" if exact_d is not None else ""),
-                 x=0.01, ha="left")
+                 x=0.01, ha="left", fontsize=9.5, fontweight="bold")
 
 
 def frames_to_gif(frames_dir, gif_path, fps=10):

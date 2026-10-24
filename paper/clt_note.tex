@@ -1,58 +1,61 @@
-\documentclass[a4paper,10pt]{article}
+\documentclass[11pt,a4paper]{article}
 
-% Encoding and typeface: XeLaTeX with Latin Modern Roman (fontspec default), English via polyglossia
+% Typeface: XeLaTeX with Latin Modern Roman (fontspec default)
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setdefaultlanguage[variant=british]{english}
 
-% Layout (tight margins)
-\usepackage[a4paper,top=1.2cm,bottom=1.3cm,left=1.3cm,right=1.3cm]{geometry}
+% Page: the measures of the note template (A4, 11 pt, 4.5 cm side margins, header and page count)
+\usepackage[a4paper,left=4.5cm,right=4.5cm,top=4.5cm,bottom=4.1cm,headheight=14pt,headsep=0.55cm,
+  footskip=0.55cm]{geometry}
+\linespread{0.946}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textbf{PROJECT NOTE} $|$ CLT speed race}
+\fancyhead[R]{\small\textbf{Compiled on:} \notedate}
+\fancyfoot[C]{\small\thepage\,/\,\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
 
-% Typography
 \usepackage{microtype}
-\usepackage{setspace}
-\setstretch{0.92}
-
-% Paragraph settings
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{3pt}
-
-% Section styling
-\usepackage{titlesec}
-\titleformat{\section}{\bfseries\normalsize}{\thesection.}{0.4em}{}
-\titlespacing*{\section}{0pt}{6pt}{3pt}
-
-% Better lists
-\usepackage{enumitem}
-\setlist{noitemsep, topsep=2pt}
-
-% Mathematics, tables, figures
-\usepackage{amsmath}
-\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array,tabularx}
 \usepackage{graphicx}
-\usepackage[font=small,labelfont=bf,labelsep=period,skip=3pt]{caption}
-\setlength{\textfloatsep}{8pt}
-\setlength{\floatsep}{6pt}
+\usepackage{enumitem}
+\setlist{noitemsep, topsep=3pt, leftmargin=*}
+\usepackage{xcolor}
+\definecolor{secblue}{HTML}{1F3A5F}
+\definecolor{boxback}{HTML}{EEF2F6}
+\definecolor{mark}{HTML}{9B2226}
+\definecolor{hl}{HTML}{FFF36B}
+\usepackage{titlesec}
+\titleformat{\section}{\color{secblue}\bfseries\normalsize}{\thesection.}{0.4em}{}
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\usepackage[font=small,labelfont=bf,labelsep=period,skip=4pt]{caption}
+\usepackage[bottom]{footmisc}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\textfloatsep}{10pt}
+\emergencystretch=3em
+
+\newcommand{\notedate}{\number\day\space\ifcase\month\or January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi\space\number\year}
 
 \input{numbers_en.tex}
 
 \begin{document}
 
-% Header (top-right)
-\begin{flushright}
-\small \textbf{Compiled on:} \today
-\end{flushright}
 
-\vspace{-6pt}
-\hrule
-\vspace{24pt}
+\vspace*{14pt}
+\begin{tabular}{@{}p{2.35cm}@{}p{\dimexpr\textwidth-2.35cm}@{}}
+\textbf{TITLE:} & \textbf{\large How fast does the central limit theorem work? Exact distances, simulation noise and heavy tails}\\[3pt]
+\textbf{SUBJECT:} & Aim, method and results of the analyses in version 2 of the \texttt{CLT-speed-race-exercise} repository\\[3pt]
+\textbf{AUTHOR:} & Muhammed İkbal Yılmaz (myucanlar@gmail.com)
+\end{tabular}
 
-\textbf{TITLE:} How fast does the central limit theorem work? Exact distances, simulation noise and heavy tails
-
-\textbf{SUBJECT:} Aim, method and results of the analyses in version 2 of the \texttt{CLT-speed-race-exercise} repository
-
-\textbf{PREPARED BY:} Muhammed İkbal Yılmaz (myucanlar@gmail.com)
-
+\vspace{8pt}
 \vspace{12pt}
 
 \section{Aim and scope}
@@ -121,7 +124,7 @@ $-1/2$, and one proportional to $n^{-1}$ a line of slope $-1$. Dashed lines are 
 leading term; a curve that approaches 1 means that the leading term explains the speed of convergence.
 
 \begin{figure}[h]
-\centering\includegraphics[width=0.9\linewidth]{../figures/fig1_exact_speed.pdf}
+\centering\includegraphics[width=\textwidth]{../figures/fig1_exact_speed.pdf}
 \caption{Exact Kolmogorov distance between the standardized mean and the normal distribution. Left: $D_n$ (solid) and its
 leading term (dashed); dotted: $0.01$. Right: $D_n$ divided by its leading term.}\label{fig:exact}
 \end{figure}
@@ -130,9 +133,11 @@ leading term (dashed); dotted: $0.01$. Right: $D_n$ divided by its leading term.
 \centering\footnotesize
 \caption{Skewness $\gamma$, excess kurtosis $\kappa_4$, leading term of $D_n$, exact $D_n$, and the smallest $n$ with
 $D_n < 0.01$, exact and as predicted by the leading term. --: does not exist, or no exact method here.}\label{tab:summary}
+\scriptsize\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{lrrrrrrr}
 \toprule
-Distribution & $\gamma$ & $\kappa_4$ & Leading term & $D_{30}$ & $D_{1000}$ & $n$ for $D_n<0.01$ & by leading term \\
+ & & & Leading & & & \multicolumn{2}{c}{$n$ for $D_n<0.01$} \\
+Distribution & $\gamma$ & $\kappa_4$ & term & $D_{30}$ & $D_{1000}$ & exact & leading term \\
 \midrule
 \input{tab_summary_en.tex}
 \end{tabular}
@@ -170,7 +175,7 @@ version 1 (400 simulated samples). Right panel: the number of replications at wh
 the mean noise. Right: the dotted lines mark the default and the largest $R$ that version 1 offered.
 
 \begin{figure}[h]
-\centering\includegraphics[width=0.9\linewidth]{../figures/fig2_monte_carlo.pdf}
+\centering\includegraphics[width=\textwidth]{../figures/fig2_monte_carlo.pdf}
 \caption{Left: simulated distances of version 1 (markers; $R = 2000$, seed 42) and exact $D_n$ (lines); dotted: mean noise of the grid
 distance of version 1. Right: replications needed for the mean noise to equal $D_n$.}\label{fig:mc}
 \end{figure}
@@ -203,7 +208,7 @@ distance exceeds three times the noise.
 line means that averaging does not reduce the spread. Right: dashed lines are the leading terms where the skewness exists.
 
 \begin{figure}[h]
-\centering\includegraphics[width=0.9\linewidth]{../figures/fig3_heavy_tails.pdf}
+\centering\includegraphics[width=\textwidth]{../figures/fig3_heavy_tails.pdf}
 \caption{Left: IQR of the sample mean. Right: simulated distance of $Z_n$ to the normal distribution ($R = 100{,}000$), with leading
 terms (dashed); shaded: below the mean noise.}\label{fig:heavy}
 \end{figure}
@@ -241,14 +246,15 @@ $\ParetoSlope$, is of this order.
 
 \section*{References}
 {\small
-Gil-Pelaez, J. (1951). Note on the inversion theorem. \textit{Biometrika}, 38(3--4), 481--482.\\
-Gnedenko, B. V., Kolmogorov, A. N. (1954). \textit{Limit Distributions for Sums of Independent Random Variables}. Addison-Wesley.\\
-Hall, P. (1992). \textit{The Bootstrap and Edgeworth Expansion}. Springer.\\
-Katz, M. L. (1963). Note on the Berry--Esseen theorem. \textit{Annals of Mathematical Statistics}, 34(3), 1107--1108.\\
-SciPy documentation: \texttt{scipy.special.gammainc}, \texttt{scipy.stats.kstwo}.
+\setlength{\parskip}{2pt}
+\hangindent=1.27cm\hangafter=1 Gil-Pelaez, J. (1951). Note on the inversion theorem. \textit{Biometrika}, 38(3--4), 481--482.\par
+\hangindent=1.27cm\hangafter=1 Gnedenko, B. V., \& Kolmogorov, A. N. (1954). \textit{Limit Distributions for Sums of Independent Random Variables}. Addison-Wesley.\par
+\hangindent=1.27cm\hangafter=1 Hall, P. (1992). \textit{The Bootstrap and Edgeworth Expansion}. Springer.\par
+\hangindent=1.27cm\hangafter=1 Katz, M. L. (1963). Note on the Berry--Esseen theorem. \textit{Annals of Mathematical Statistics}, 34(3), 1107--1108.\par
+\hangindent=1.27cm\hangafter=1 SciPy documentation: \texttt{scipy.special.gammainc}, \texttt{scipy.stats.kstwo}.\par
 
 \smallskip
-An AI coding assistant was used in writing the code and in preparing this note. All numbers are generated from
+All numbers are generated from
 \texttt{figures/*.csv} by \texttt{make\_paper.py}.
 }
 
