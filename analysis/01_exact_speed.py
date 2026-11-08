@@ -17,7 +17,7 @@ import numpy as np
 from common import EXACT, THRESHOLD, Distribution, name, save_table
 from cltspeed import kolmogorov_distance, leading_term, v1_distributions
 from cltspeed.montecarlo import noise_floor
-from cltspeed.style import RED, SERIES, L, auto_axis, fit_log_axis, may_touch, save_figure, use_style
+from cltspeed.style import RED, SERIES, L, auto_axis, fit_log_axis, may_touch, save_figure, use_style, ref_label
 
 NS = np.unique(np.round(np.geomspace(1, 10_000, 41)).astype(int))
 FLOOR_R2000 = noise_floor(2000)[0]
@@ -84,6 +84,7 @@ def draw():
         ax.plot(NS, lead, color=c, lw=0.6, ls=(0, (3, 2)))
         ratios.append(np.asarray(ds) / lead)
     may_touch(ax.axhline(THRESHOLD, color=RED, lw=0.9, ls=(0, (1, 1.4))))
+    ref_label(ax, L("0.01", "0,01"), x=0.99, y_data=THRESHOLD)
     fit_log_axis(ax, "x", NS, every=2)
     log_lo = 1e-6
     fit_log_axis(ax, "y", [log_lo, 1.0], every=2)
@@ -93,6 +94,7 @@ def draw():
     for (label, ds), (c, ls, mk), r in zip(curves.items(), SERIES, ratios):
         ax.plot(NS, r, color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, markevery=4)
     may_touch(ax.axhline(1, color=RED, lw=0.9, ls=(0, (1, 1.4))))
+    ref_label(ax, L("ratio = 1", "oran = 1"), x=0.55, y_data=1, ha="center")
     fit_log_axis(ax, "x", NS, every=2)
     auto_axis(ax, "y", np.append(np.concatenate(ratios), 0.0))
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))

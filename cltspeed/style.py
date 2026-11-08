@@ -205,6 +205,12 @@ def end_label(ax, x, y, text, color, dx=4, dy=0, va="center"):
                 fontsize=7.5, va=va, ha="left", annotation_clip=False)
 
 
+def ref_label(ax, text, x=0.99, y_data=None, ha="right", va="bottom"):
+    """Bold red label for a red dotted reference line (x in axes fraction, y in data units)."""
+    ax.annotate(text, xy=(x, y_data), xycoords=("axes fraction", "data"), xytext=(0, 1.5 if va == "bottom" else -1.5),
+                textcoords="offset points", ha=ha, va=va, color=RED, fontweight="bold", fontsize=6.6)
+
+
 def source_note(ax, text, x=0.03, y=0.03, ha="left", va="bottom"):
     ax.text(x, y, text, transform=ax.transAxes, fontsize=6.6, ha=ha, va=va, color=INK)
 

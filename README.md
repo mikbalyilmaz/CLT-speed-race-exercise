@@ -33,11 +33,20 @@ why each analysis was done and what it shows.
   about ten times closer to normal at $n = 30$.
 - **Infinite third moments slow convergence.** Student-t(3) is symmetric but converges like $0.110/\sqrt n$ and needs
   $n = 116$. Pareto(2.5), the default of version 1, is still at a distance of 0.031 at $n = 10^4$.
+
+![Figure 1: exact distance to the normal distribution](figures/fig1_exact_speed.png)
+
 - **The race of version 1 mostly showed simulation noise.** With $R = 2000$ replications the simulated distance averages
   about 0.017–0.019 even when $Z_n$ is exactly normal: version 1 reported 0.0151 for the Normal distribution
   at $n = 10^4$. To resolve the exact distance of Uniform at $n = 1000$ would take about $10^9$ replications.
+
+![Figure 2: what a simulation with 2,000 replications can and cannot measure](figures/fig2_monte_carlo.png)
+
 - **Infinite variance.** The interquartile range of the Cauchy mean stays at 2 for every $n$; for Pareto(1.5) it
   shrinks like $n^{-0.30}$ (theory: $n^{-1/3}$), not like $n^{-1/2}$.
+
+![Figure 3: heavy tails](figures/fig3_heavy_tails.png)
+
 
 All numbers are in `figures/*.csv` and in the project note.
 
@@ -131,7 +140,7 @@ and Pareto have no exact method here and are studied by simulation. Only the def
 ## References
 
 - Gil-Pelaez, J. (1951). Note on the inversion theorem. *Biometrika*, 38(3–4), 481–482.
-- Gnedenko, B. V., Kolmogorov, A. N. (1954). *Limit Distributions for Sums of Independent Random Variables*. Addison-Wesley.
+- Gnedenko, B. V., & Kolmogorov, A. N. (1954). *Limit Distributions for Sums of Independent Random Variables*. Addison-Wesley.
 - Hall, P. (1992). *The Bootstrap and Edgeworth Expansion*. Springer.
 - Katz, M. L. (1963). Note on the Berry–Esseen theorem. *Annals of Mathematical Statistics*, 34(3), 1107–1108.
 

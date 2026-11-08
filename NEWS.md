@@ -1,5 +1,15 @@
 # Changes
 
+## Version 2.1.1
+
+No result changed: every table and every number in the notes is the same as in version 2.1.0.
+
+| # | Version 2.1.0 | Version 2.1.1 |
+|---|---|---|
+| 1 | The red dotted reference lines in Figures 1 and 2 were explained only in the figure heading | Each line carries a bold red label (0.01 and ratio = 1 in Figure 1; R = 2,000 and R = 6,000 in Figure 2), in English and Turkish |
+| 2 | The README showed only the animation; the figures were not embedded | Figures 1-3 are shown under the result they belong to |
+| 3 | The Gnedenko and Kolmogorov reference in the README had no ampersand | Ampersand added (APA 7), as in the notes |
+
 ## Version 2.1.0
 
 No result changed: every table and every number in the notes is the same as in version 2.0.0.
