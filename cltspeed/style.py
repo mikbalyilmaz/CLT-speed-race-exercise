@@ -368,6 +368,7 @@ def save_figure(name, draw, heading=None):
     heading (for the README). `draw()` returns a figure; `heading()` returns its title."""
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     fig = draw()
+    detach_left_axis(fig)
     _checked(fig, name)
     fig.savefig(FIG_DIR / f"{name}.pdf")
     if heading is not None:

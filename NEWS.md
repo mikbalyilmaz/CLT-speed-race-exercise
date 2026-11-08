@@ -1,5 +1,9 @@
 # Changes
 
+## Version 2.2.1
+
+No result changed. The 4 pt gap between the vertical axis and the data of Version 2.1.2 is restored in Figures 1-3; it was lost when the second language pass was removed in Version 2.2.0 (`save_figure` no longer called `detach_left_axis`).
+
 ## Version 2.2.0
 
 No result changed. The repository is now in English only.
