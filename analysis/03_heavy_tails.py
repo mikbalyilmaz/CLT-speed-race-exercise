@@ -106,7 +106,7 @@ def draw():
     fit_log_axis(ax, "y", vals)
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
     ax.set_title(L("(a) IQR of the sample mean", "(a) Örneklem ortalamasının ÇAA'sı"))
-    ax.legend(loc="upper right", fontsize=6, handlelength=2.4, ncol=2, columnspacing=0.8)
+    ax.legend(loc="upper right", fontsize=5.8, handlelength=1.6, ncol=2, columnspacing=0.6, handletextpad=0.5)
     ax = axes[1]
     ax.axhspan(1e-5, noise, color=MUTED, alpha=0.13, lw=0)
     may_touch(ax.axhline(noise, color=MUTED, lw=0.8, ls=(0, (1, 1.4))))

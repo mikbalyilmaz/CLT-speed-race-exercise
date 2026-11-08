@@ -94,7 +94,7 @@ def draw():
     for (label, ds), (c, ls, mk), r in zip(curves.items(), SERIES, ratios):
         ax.plot(NS, r, color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, markevery=4)
     may_touch(ax.axhline(1, color=RED, lw=0.9, ls=(0, (1, 1.4))))
-    ref_label(ax, L("ratio = 1", "oran = 1"), x=0.55, y_data=1, ha="center")
+    ref_label(ax, L("ratio = 1", "oran = 1"), x=0.55, y_data=1, ha="center", dy=4)
     fit_log_axis(ax, "x", NS, every=2)
     auto_axis(ax, "y", np.append(np.concatenate(ratios), 0.0))
     ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))

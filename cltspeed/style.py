@@ -205,9 +205,9 @@ def end_label(ax, x, y, text, color, dx=4, dy=0, va="center"):
                 fontsize=7.5, va=va, ha="left", annotation_clip=False)
 
 
-def ref_label(ax, text, x=0.99, y_data=None, ha="right", va="bottom"):
+def ref_label(ax, text, x=0.99, y_data=None, ha="right", va="bottom", dy=1.5):
     """Bold red label for a red dotted reference line (x in axes fraction, y in data units)."""
-    ax.annotate(text, xy=(x, y_data), xycoords=("axes fraction", "data"), xytext=(0, 1.5 if va == "bottom" else -1.5),
+    ax.annotate(text, xy=(x, y_data), xycoords=("axes fraction", "data"), xytext=(0, dy if va == "bottom" else -dy),
                 textcoords="offset points", ha=ha, va=va, color=RED, fontweight="bold", fontsize=6.6)
 
 
@@ -367,6 +367,14 @@ def _heading(fig, text):
     return t
 
 
+def detach_left_axis(fig, points=4):
+    """Move the vertical axis a few points away from the data, so that lines and markers that start at the first
+    x tick do not sit on the axis line. Axis limits stay at labelled ticks."""
+    for ax in fig.axes:
+        if ax.spines["left"].get_visible():
+            ax.spines["left"].set_position(("outward", points))
+
+
 def save_figure(name, draw, heading=None):
     """Draw the figure in both languages and check each version before it is written. `draw()` returns a figure;
     `heading()` returns its title, which is shown in the PNG only (in the notes the caption carries the title)."""
@@ -376,6 +384,7 @@ def save_figure(name, draw, heading=None):
         for lang in ("en", "tr"):
             LANG = lang
             fig = draw()
+            detach_left_axis(fig)
             _checked(fig, f"{name}_{lang}")
             if lang == "en":
                 fig.savefig(FIG_DIR / f"{name}.pdf")

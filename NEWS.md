@@ -1,5 +1,14 @@
 # Changes
 
+## Version 2.1.2
+
+No result changed: every table and every number in the notes is the same as in version 2.1.1.
+
+| # | Version 2.1.1 | Version 2.1.2 |
+|---|---|---|
+| 1 | Lines and markers that start at the first x tick (n = 1 or n = 10) sat on the vertical axis, and the legend of Figure 3a crossed it | The vertical axis is moved 4 pt away from the data (axis limits stay at labelled ticks); the legend of Figure 3a is narrower |
+| 2 | The label "ratio = 1" in Figure 1b touched the markers | The label sits 4 pt higher |
+
 ## Version 2.1.1
 
 No result changed: every table and every number in the notes is the same as in version 2.1.0.
