@@ -21,7 +21,7 @@ $$Z_n = \frac{\sqrt{n}\,(\bar X_n - \mu)}{\sigma}$$
 approaches the standard normal distribution for the ten population distributions of version 1. Speed is measured by
 the Kolmogorov distance $D_n = \sup_x |P(Z_n \le x) - \Phi(x)|$, computed exactly (without simulation) where possible
 and compared with the leading term of its Edgeworth expansion. The animated "race" of version 1 is kept, rebuilt so that
-it shows the exact distance and the noise level of the simulation. A short project note (English and Turkish) explains
+it shows the exact distance and the noise level of the simulation. A short project note explains
 why each analysis was done and what it shows.
 
 ## Main results
@@ -82,15 +82,15 @@ The frames are written to `notebook/clt_renders/`, which `.gitignore` excludes. 
 | `cltspeed/exact.py` | Exact $D_n$: gamma and Irwin–Hall distribution functions, Gil-Pelaez inversion; leading terms |
 | `cltspeed/montecarlo.py` | The simulation of version 1, reproduced draw for draw; exact empirical distance; noise level of a simulation |
 | `cltspeed/race.py` | The animated race (frames, GIF, MP4), usable with or without Jupyter |
-| `cltspeed/style.py` | Shared figure style (Latin Modern Roman, colours, English and Turkish versions of each figure) |
+| `cltspeed/style.py` | Shared figure style (Latin Modern Roman, colours) |
 | `tests/run_tests.py` | Unit tests against SciPy, numerical Fourier integrals, exact rational arithmetic and the output of version 1 |
 | `analysis/01_exact_speed.py` | Exact $D_n$ for six distributions and its leading terms (Figure 1, Table 1) |
 | `analysis/02_monte_carlo.py` | What the simulation of version 1 measures (Figure 2) |
 | `analysis/03_heavy_tails.py` | Lognormal, F and Pareto by simulation; infinite variance (Figure 3) |
 | `analysis/run_all.py` | Runs the three analyses in order |
 | `notebook/clt_speed_race.ipynb` | The interactive race |
-| `figures/` | Figures as PNG (300 dpi) and PDF, every reported table as CSV; `figures/tr/` holds the Turkish figures |
-| `paper/clt_note.pdf`, `paper/clt_notu.pdf` | Project note in English and in Turkish; `make_paper.py` writes all their numbers from `figures/*.csv` |
+| `figures/` | Figures as PNG (300 dpi) and PDF, every reported table as CSV |
+| `paper/clt_note.pdf` | Project note in English; `make_paper.py` writes all their numbers from `figures/*.csv` |
 | `legacy/clt_speed_race_v1.ipynb` | Version 1, unchanged |
 | `fonts/` | Latin Modern Roman (GUST Font License) |
 
@@ -104,7 +104,6 @@ python run_all.py                    # about four minutes
 cd ../paper
 python make_paper.py
 xelatex clt_note.tex && xelatex clt_note.tex       # English; needs XeLaTeX
-xelatex clt_notu.tex && xelatex clt_notu.tex       # Turkish
 ```
 
 Seeds are fixed, so every number is the same at every run.

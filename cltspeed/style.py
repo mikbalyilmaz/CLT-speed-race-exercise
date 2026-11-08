@@ -9,9 +9,6 @@ axis line never runs past its last tick, and no axis has minor ticks. Value axes
 or `log_axis` (logarithmic); `save_figure` refuses to write a figure in which an axis of a panel was not set this
 way, in which a limit is not a tick, in which minor ticks are drawn, or in which two pieces of text overlap.
 
-Every figure is drawn twice: in English (PDF for the English note, PNG with a heading for the README) and in
-Turkish (figures/tr/*.pdf, used by the Turkish note), with the decimal comma in the Turkish version.
-
 Author: Muhammed Ikbal Yilmaz
 """
 
@@ -42,18 +39,9 @@ SERIES = [(INK, "-", "o"), (BLUE, "-", "s"), (MUTED, "-", "D"), (INK, "--", "^")
 _EPS = 1e-9
 
 
-LANG = "en"
-
-
-def L(en, tr):
-    """English or Turkish label, depending on the figure being drawn."""
-    return tr if LANG == "tr" else en
-
-
 def num(value, fmt="{:g}"):
-    """Format a number with the decimal mark of the current figure language and a typographic minus sign."""
-    text = fmt.format(value)
-    return (text.replace(".", ",") if LANG == "tr" else text).replace("-", "−")
+    """Format a number with a typographic minus sign."""
+    return fmt.format(value).replace("-", "−")
 
 
 def use_style():
@@ -376,24 +364,14 @@ def detach_left_axis(fig, points=4):
 
 
 def save_figure(name, draw, heading=None):
-    """Draw the figure in both languages and check each version before it is written. `draw()` returns a figure;
-    `heading()` returns its title, which is shown in the PNG only (in the notes the caption carries the title)."""
-    global LANG
-    (FIG_DIR / "tr").mkdir(parents=True, exist_ok=True)
-    try:
-        for lang in ("en", "tr"):
-            LANG = lang
-            fig = draw()
-            detach_left_axis(fig)
-            _checked(fig, f"{name}_{lang}")
-            if lang == "en":
-                fig.savefig(FIG_DIR / f"{name}.pdf")
-                if heading is not None:
-                    _heading(fig, heading())
-                    _checked(fig, name + "_heading")
-                fig.savefig(FIG_DIR / f"{name}.png")
-            else:
-                fig.savefig(FIG_DIR / "tr" / f"{name}.pdf")
-            plt.close(fig)
-    finally:
-        LANG = "en"
+    """Draw the figure and check it before it is written: PDF without a heading (for the note) and PNG with a
+    heading (for the README). `draw()` returns a figure; `heading()` returns its title."""
+    FIG_DIR.mkdir(parents=True, exist_ok=True)
+    fig = draw()
+    _checked(fig, name)
+    fig.savefig(FIG_DIR / f"{name}.pdf")
+    if heading is not None:
+        _heading(fig, heading())
+        _checked(fig, name + "_heading")
+    fig.savefig(FIG_DIR / f"{name}.png")
+    plt.close(fig)

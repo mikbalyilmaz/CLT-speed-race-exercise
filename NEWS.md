@@ -1,5 +1,15 @@
 # Changes
 
+## Version 2.2.0
+
+No result changed. The repository is now in English only.
+
+- The Turkish project note (`clt_notu`), the Turkish figures (`figures/tr/`) and the Turkish number and table files
+  (`*_tr.tex`) are removed.
+- The code no longer draws or writes a second language: the label function that chose between English and Turkish
+  text, the decimal comma and the second pass over each figure are removed.
+
+
 ## Version 2.1.2
 
 No result changed: every table and every number in the notes is the same as in version 2.1.1.

@@ -35,11 +35,6 @@ def read_table(name):
         return list(csv.DictReader(f))
 
 
-TURKISH = {"Uniform": "Tekdüze", "Exponential": "Üstel", "Chi-square(5)": "Ki-kare(5)",
-           "Lognormal(0.6)": "Lognormal(0,6)", "Pareto(2.5)": "Pareto(2,5)", "Pareto(1.5)": "Pareto(1,5)"}
-
-
 def name(label):
-    """Distribution label in the language of the figure being drawn."""
-    from cltspeed.style import L
-    return L(label, TURKISH.get(label, label))
+    """Distribution label."""
+    return label

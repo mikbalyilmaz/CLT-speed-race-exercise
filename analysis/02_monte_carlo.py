@@ -19,7 +19,7 @@ import numpy as np
 from common import EXACT, Distribution, name, read_table, save_table
 from cltspeed import kolmogorov_distance
 from cltspeed.montecarlo import KOLMOGOROV_MEAN, ks_grid_v1, noise_floor, replications_needed, v1_race
-from cltspeed.style import BLUE, INK, MUTED, RED, SERIES, L, fit_log_axis, may_touch, save_figure, use_style, ref_label
+from cltspeed.style import BLUE, INK, MUTED, RED, SERIES, fit_log_axis, may_touch, save_figure, use_style, ref_label
 
 R = 2000
 floor_mean, floor_q95 = noise_floor(R)
@@ -83,8 +83,8 @@ def draw():
     ax.axhspan(1e-7, noise, color=MUTED, alpha=0.13, lw=0)
     may_touch(ax.axhline(noise, color=MUTED, lw=0.8, ls=(0, (1, 1.4))))
     handles, values = [], []
-    names = {"Normal": L("Normal", "Normal"), "Uniform": L("Uniform", "Tekdüze"),
-             "Exponential": L("Exponential", "Üstel")}
+    names = {"Normal": "Normal", "Uniform": "Uniform",
+             "Exponential": "Exponential"}
     for dist, c, mk in zip(SHOWN, (MUTED, BLUE, INK), ("o", "s", "D")):
         sub = [r for r in rows if r["distribution"] == dist.label]
         ax.plot([r["n"] for r in sub], [r["ks_v1"] for r in sub], ls="none", marker=mk, ms=2.4, color=c)
@@ -95,11 +95,11 @@ def draw():
         handles.append(Line2D([], [], color=c, marker=mk, ms=2.4, lw=0 if dist.name == "Normal" else 1.1,
                               label=names[dist.name]))
     handles.append(Line2D([], [], color=MUTED, lw=0.8, ls=(0, (1, 1.4)),
-                          label=L("Mean noise, R = 2,000", "Ortalama gürültü, R = 2.000")))
+                          label="Mean noise, R = 2,000"))
     fit_log_axis(ax, "x", [10, 10_000])
     fit_log_axis(ax, "y", [1e-5, 10.0])
-    ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_title(L("(a) Version 1 simulation and exact $D_n$", "(a) 1. sürüm benzetimi ve kesin $D_n$"))
+    ax.set_xlabel("Sample size n")
+    ax.set_title("(a) Version 1 simulation and exact $D_n$")
     ax.legend(handles=handles, loc="upper center", fontsize=6, ncol=2, columnspacing=1.0, handlelength=1.6)
     ax = axes[1]
     allr = []
@@ -111,12 +111,12 @@ def draw():
         ax.plot(ns, rr, color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, markevery=3, label=name(dist.label))
     for value in (2000, 6000):           # R of version 1: default and maximum
         may_touch(ax.axhline(value, color=RED, lw=0.8, ls=(0, (1, 1.4))))
-        ref_label(ax, L(f"R = {value:,}", f"R = {value:,}".replace(",", ".")), x=0.99, y_data=value,
+        ref_label(ax, f"R = {value:,}", x=0.99, y_data=value,
                   va="bottom" if value == 6000 else "top")
     fit_log_axis(ax, "x", [10, 10_000])
     fit_log_axis(ax, "y", np.concatenate(allr + [[100.0, 1e13]]), every=2)     # room for the legend above the lines
-    ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_title(L("(b) R at which the noise equals $D_n$", "(b) Gürültünün $D_n$'ye eşit olduğu R"))
+    ax.set_xlabel("Sample size n")
+    ax.set_title("(b) R at which the noise equals $D_n$")
     ax.legend(loc="upper left", fontsize=6, handlelength=2.4, ncol=2, columnspacing=0.8)
     return fig
 

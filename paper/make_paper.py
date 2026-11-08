@@ -1,8 +1,8 @@
 """Writes every number and table of the project notes from ../figures/*.csv, so that the text cannot drift
 away from the analysis. Run from inside paper/:  python make_paper.py
 
-Output, once in English (suffix _en, for clt_note.tex) and once in Turkish (suffix _tr, for clt_notu.tex):
-numbers_xx.tex (one macro per quoted number) and tab_summary_xx.tex (table body ending with its bottom rule,
+Output (suffix _en, for clt_note.tex):
+numbers_en.tex (one macro per quoted number) and tab_summary_en.tex (table body ending with its bottom rule,
 because a rule cannot follow \\input directly inside a tabular).
 """
 
@@ -37,17 +37,13 @@ NAMES = {
            "Lognormal(0.6)": "Lognormal(0.6)", "Chi-square(5)": "Chi-square(5)", "F(5, 10)": "F(5, 10)",
            "Student-t(5)": "Student-t(5)", "Student-t(3)": "Student-t(3)", "Pareto(2.5)": "Pareto(2.5)",
            "Cauchy": "Cauchy"},
-    "tr": {"Normal": "Normal", "Uniform": "Tekdüze", "Exponential": "Üstel", "Laplace": "Laplace",
-           "Lognormal(0.6)": "Lognormal(0,6)", "Chi-square(5)": "Ki-kare(5)", "F(5, 10)": "F(5, 10)",
-           "Student-t(5)": "Student-t(5)", "Student-t(3)": "Student-t(3)", "Pareto(2.5)": "Pareto(2,5)",
-           "Cauchy": "Cauchy"},
 }
 ORDER = ["Normal", "Uniform", "Laplace", "Student-t(5)", "Student-t(3)", "Chi-square(5)", "Exponential",
          "Lognormal(0.6)", "F(5, 10)", "Pareto(2.5)", "Cauchy"]
 
 
 def build(lang):
-    big, dmark = ("{,}", ".") if lang == "en" else (".", "{,}")
+    big, dmark = ("{,}", ".")
 
     def dec(x, d):
         return f"{float(x):.{d}f}".replace(".", dmark)
@@ -148,7 +144,7 @@ def build(lang):
     for dist in ORDER:
         r = summary[dist]
         if dist == "Cauchy":
-            no_mean = "no mean or variance" if lang == "en" else "ortalama ve varyans yok"
+            no_mean = "no mean or variance"
             lines.append(f"{NAMES[lang][dist]} & \\multicolumn{{7}}{{l}}{{{no_mean}}} \\\\")
             continue
         g = sig(r["skewness"]) if r["skewness"] != "" else dash
@@ -167,6 +163,6 @@ def build(lang):
     (OUT / f"tab_summary_{lang}.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-for lang in ("en", "tr"):
+for lang in ("en",):
     build(lang)
-print("Wrote numbers_*.tex and tab_summary_*.tex (en, tr).")
+print("Wrote numbers_*.tex and tab_summary_*.tex (en).")

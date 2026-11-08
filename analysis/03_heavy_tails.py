@@ -23,7 +23,7 @@ from scipy import special
 from common import SEED, Distribution, name, save_table
 from cltspeed import leading_term
 from cltspeed.montecarlo import ks_exact, noise_floor, sample_means
-from cltspeed.style import BLUE, INK, MUTED, L, fit_log_axis, may_touch, save_figure, use_style
+from cltspeed.style import BLUE, INK, MUTED, fit_log_axis, may_touch, save_figure, use_style
 
 R = 100_000
 R_IQR_ONLY = 20_000
@@ -96,7 +96,7 @@ def draw():
     fig, axes = plt.subplots(1, 2, figsize=(4.75, 2.6), constrained_layout=True)
     ax = axes[0]
     vals = [r["Normal_exact"] for r in iqr_rows]
-    ax.plot(NS, vals, color=MUTED, lw=1.1, ls=(0, (3, 2)), label=L("Normal(0, 1), exact", "Normal(0, 1), kesin"))
+    ax.plot(NS, vals, color=MUTED, lw=1.1, ls=(0, (3, 2)), label="Normal(0, 1), exact")
     for label, c, ls, mk in (("Pareto(2.5)", BLUE, "-", "o"), ("Pareto(1.5)", INK, "--", "s"),
                              ("Cauchy", INK, "-", "D")):
         y = [r[label] for r in iqr_rows]
@@ -104,8 +104,8 @@ def draw():
         ax.plot(NS, y, color=c, ls=ls, lw=1.1, marker=mk, ms=2.2, label=name(label))
     fit_log_axis(ax, "x", NS, every=2)
     fit_log_axis(ax, "y", vals)
-    ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_title(L("(a) IQR of the sample mean", "(a) Örneklem ortalamasının ÇAA'sı"))
+    ax.set_xlabel("Sample size n")
+    ax.set_title("(a) IQR of the sample mean")
     ax.legend(loc="upper right", fontsize=5.8, handlelength=1.6, ncol=2, columnspacing=0.6, handletextpad=0.5)
     ax = axes[1]
     ax.axhspan(1e-5, noise, color=MUTED, alpha=0.13, lw=0)
@@ -116,13 +116,12 @@ def draw():
         lead = [r[f"{label} leading term"] for r in ks_rows]
         if lead[0] != "":
             ax.plot(NS, lead, color=c, lw=0.6, ls=(0, (3, 2)))
-    ax.text(0.03, 0.03, L("grey dotted line: mean noise,\nR = 100,000",
-                          "gri noktalı çizgi: ortalama gürültü,\nR = 100.000"), fontsize=6,
+    ax.text(0.03, 0.03, "grey dotted line: mean noise,\nR = 100,000", fontsize=6,
             transform=ax.transAxes, color=INK)
     fit_log_axis(ax, "x", NS, every=2)
     fit_log_axis(ax, "y", [1e-3, 1.0])
-    ax.set_xlabel(L("Sample size n", "Örneklem büyüklüğü n"))
-    ax.set_title(L("(b) Simulated distance to normality", "(b) Benzetimle normalden uzaklık"))
+    ax.set_xlabel("Sample size n")
+    ax.set_title("(b) Simulated distance to normality")
     ax.legend(loc="upper right", fontsize=6.3, handlelength=2.6)
     return fig
 
